@@ -1,0 +1,66 @@
+﻿<#@ template language="C#" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension="cs"#>
+<#
+    string CreateGenericTypes(int start, int count)
+        => string.Join(",", Enumerable.Range(start, count).Select(i => $"T{i}"));
+
+    string CreateParameters(int start, int count)
+        => string.Join(",", Enumerable.Range(start, count).Select(i => $"T{i} t{i}"));
+    string CreateArguments(int start, int count)
+        => string.Join(",", Enumerable.Range(start, count).Select(i => $"t{i}"));
+#>
+
+#if UNITY_EDITOR ||!ENABLE_IL2CPP
+#define Mono
+#else
+using UniReflection.IL2CPP;
+#endif
+using System;
+
+namespace UniReflection
+{
+<# for(var i =1;i<8;i++) { 
+       var genericTypes = CreateGenericTypes(0, i);
+       var parameters = CreateParameters(0, i);
+       var arguments = CreateArguments(0, i);#>
+    public unsafe struct InstanceAction<<#=genericTypes#>>: IDisposable
+    {
+        private PinnedObject pinnedObject;
+        public PinnedObject Object=>pinnedObject;
+#if Mono
+        private readonly delegate* unmanaged[Cdecl]<IntPtr,<#=genericTypes#>,void> functionPointer;
+        
+         public InstanceAction(Action<<#=genericTypes#>> action)
+        
+        {
+            pinnedObject =new(action.Target);
+            functionPointer = (delegate*unmanaged[Cdecl]<IntPtr,<#=genericTypes#>,void> )action.Method.MethodHandle.GetFunctionPointer();
+        }
+        
+        public readonly void Invoke(<#=parameters#>)
+        {
+            functionPointer(pinnedObject.ObjectPointer,<#=arguments#>);
+        }
+#else
+         private readonly Il2CppMethodInfoHandle methodInfoHandle;
+
+        public InstanceAction(Action<<#=genericTypes#>> action)
+        
+        {
+            pinnedObject =new(action.Target);
+            methodInfoHandle =new (action.Method)  ;
+        }
+        
+        public readonly void Invoke(<#=parameters#>)
+        {
+            ((delegate* unmanaged[Cdecl]<IntPtr,<#=genericTypes#>,Il2CppMethodInfoHandle, void>)methodInfoHandle.MethodPointer)(pinnedObject.ObjectPointer,<#=arguments#>, methodInfoHandle);
+        }
+#endif
+        public void Dispose()
+        {
+            pinnedObject.Dispose();
+        }
+    }
+<# } #>
+}

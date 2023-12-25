@@ -1,0 +1,131 @@
+﻿<#@ template language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension="cs"#>
+<#
+    string CreateGenericTypes(int start, int count)
+        => string.Join(",", Enumerable.Range(start, count).Select(i => $"T{i}"));
+
+    string CreateParameters(int start, int count)
+        => string.Join(",", Enumerable.Range(start, count).Select(i => $"T{i} t{i}"));
+    string CreateArguments(int start, int count)
+        => string.Join(",", Enumerable.Range(start, count).Select(i => $"t{i}"));
+#>
+
+#if UNITY_EDITOR ||!ENABLE_IL2CPP
+#define Mono
+#else
+using UniReflection.IL2CPP;
+#endif
+using System;
+using System.Reflection;
+using System.Reflection.Emit;
+namespace UniReflection
+{
+<#
+    for (var i = 1; i < 10; i++)
+    {
+        var genericTypes = CreateGenericTypes(0, i);
+        var parameters = CreateParameters(0, i);
+        var arguments = CreateArguments(0, i);
+#>
+    public static unsafe class NewCache<<#=genericTypes#>, TInstance>
+    {
+        public static readonly Func<<#=genericTypes#>, TInstance> CreateInstance;
+        public static readonly bool HasValidConstructor;
+
+        public static bool TryCreateInstance(<#=parameters#>, out TInstance instance)
+        {
+            if (HasValidConstructor)
+            {
+                instance = CreateInstance(<#=arguments#>);
+                return true;
+            }
+
+            instance = default;
+            return false;
+        }
+
+        static NewCache()
+        {
+            var targetType = typeof(TInstance);
+
+            ConstructorInfo constructor;
+            lock (TypeArrayCache.TypeArray<#=i#>)
+            {
+                var paramTypes = TypeArrayCache.TypeArray<#=i#>;
+<#
+for (var j = 0; j < i; j++)
+{
+#>
+                    paramTypes[<#=j#>] = typeof(T<#=j#>);
+<#}
+#>
+                 constructor = targetType.GetConstructor(
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic, null, paramTypes,
+                    null);
+            }
+
+            HasValidConstructor = true;
+
+#if Mono
+            lock (TypeArrayCache.TypeArray<#=i+1#>)
+            {
+                var paramTypes = TypeArrayCache.TypeArray<#=i+1#>;
+                paramTypes[0] = typeof(object);
+<#
+for (var j = 0; j < i; j++)
+{
+#>
+                    paramTypes[<#=j+1#>] = typeof(T<#=j#>);
+<#}
+#>
+                
+                var dm =
+                    new DynamicMethod("new", typeof(TInstance),paramTypes, restrictedSkipVisibility: true);
+                var il = dm.GetILGenerator();
+<#
+for (var j = 0; j < i; j++)
+{
+#>
+                  il.Emit(OpCodes.Ldarg_S,<#=j+1#>);
+<#}
+#>
+                il.Emit(OpCodes.Newobj, constructor);
+                il.Emit(OpCodes.Ret);
+                CreateInstance = (Func<<#=genericTypes#>, TInstance>)dm.CreateDelegate(typeof(Func<<#=genericTypes#>, TInstance>));
+            }
+
+#else
+            var isValueType = targetType.IsValueType;
+            var klass = targetType.GetClassHandle();
+            if (isValueType)
+            {
+                var p = (delegate*<ref TInstance, <#=genericTypes#>, void>)constructor.MethodHandle.Value;
+                CreateInstance = (<#=arguments#>) =>
+                {
+                    var t = default(TInstance);
+                    p(ref t, <#=arguments#>);
+                    return t;
+                };
+            }
+            else
+            {
+                var p = (delegate*<Il2CppObjectHandle, <#=genericTypes#>, void>)constructor.MethodHandle.Value;
+                CreateInstance = (<#=arguments#>) =>
+                {
+                    var o = Il2CppApi.il2cpp_object_new(klass);
+                    p(o, <#=arguments#>);
+                    return Unsafe.As<Il2CppObjectHandle, TInstance>(ref o);
+                };
+            }
+#endif
+        }
+    }
+<#
+    }
+#>
+}

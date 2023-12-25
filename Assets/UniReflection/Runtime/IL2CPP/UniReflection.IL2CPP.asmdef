@@ -1,0 +1,14 @@
+{
+    "name": "UniReflection.IL2CPP",
+    "rootNamespace": "UniReflection.IL2CPP",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

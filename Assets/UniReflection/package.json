@@ -1,0 +1,11 @@
+﻿{
+  "name": "com.akeit0.uni-reflection",
+  "version": "0.1",
+  "displayName": "UniReflection",
+  "description": "Reflection Utilities for UnityEngin 2022.2~2023.1 including IL2CPP",
+  "unity": "2022.2",
+  "author": {
+    "name": "Akeit0",
+    "url": "https://github.com/Akeit0"
+  }
+}
