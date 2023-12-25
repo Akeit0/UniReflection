@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 namespace UniReflection
 {
-    public static unsafe class NewCache<T0, TInstance>
+    public static unsafe class NewCache<TInstance,T0>
     {
         public static readonly Func<T0, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -84,7 +84,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1>
     {
         public static readonly Func<T0,T1, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -162,7 +162,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1,T2, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1,T2>
     {
         public static readonly Func<T0,T1,T2, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -243,7 +243,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1,T2,T3, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1,T2,T3>
     {
         public static readonly Func<T0,T1,T2,T3, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -327,7 +327,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1,T2,T3,T4, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1,T2,T3,T4>
     {
         public static readonly Func<T0,T1,T2,T3,T4, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -414,7 +414,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1,T2,T3,T4,T5, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1,T2,T3,T4,T5>
     {
         public static readonly Func<T0,T1,T2,T3,T4,T5, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -504,7 +504,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1,T2,T3,T4,T5,T6, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1,T2,T3,T4,T5,T6>
     {
         public static readonly Func<T0,T1,T2,T3,T4,T5,T6, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -597,7 +597,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1,T2,T3,T4,T5,T6,T7, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1,T2,T3,T4,T5,T6,T7>
     {
         public static readonly Func<T0,T1,T2,T3,T4,T5,T6,T7, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;
@@ -693,7 +693,7 @@ namespace UniReflection
 #endif
         }
     }
-    public static unsafe class NewCache<T0,T1,T2,T3,T4,T5,T6,T7,T8, TInstance>
+    public static unsafe class NewCache<TInstance,T0,T1,T2,T3,T4,T5,T6,T7,T8>
     {
         public static readonly Func<T0,T1,T2,T3,T4,T5,T6,T7,T8, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;

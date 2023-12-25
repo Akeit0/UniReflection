@@ -1,0 +1,24 @@
+{
+    "name": "UniReflection.Tests",
+    "rootNamespace": "",
+    "references": [
+        "GUID:0c0d079cb9bcd8644a539f29f8e4142c",
+        "GUID:91e66e2e63b788444bb2dab4b253479b",
+        "GUID:c0dd0d10738d4ad4a9de57c559d0ca1b",
+        "GUID:27619889b8ba8c24980f49ee34dbb44a",
+        "GUID:0acc523941302664db1f4e527237feb3"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

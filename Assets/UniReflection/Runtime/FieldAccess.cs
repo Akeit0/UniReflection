@@ -69,10 +69,10 @@ namespace UniReflection {
         public static Action<TValue> CreateStaticFieldSetter<TValue>(
             this FieldInfo fieldInfo) {
 #if Mono
-            DynamicMethod m = new DynamicMethod("getter", typeof(TValue),TypeArrayCache<object>.TypeArray);
+            DynamicMethod m = new DynamicMethod("setter", null,TypeArrayCache<object,TValue>.TypeArray);
             ILGenerator cg = m.GetILGenerator();
-            cg.Emit(OpCodes.Ldarg_0);
-            cg.Emit(OpCodes.Stfld, fieldInfo);
+            cg.Emit(OpCodes.Ldarg_1);
+            cg.Emit(OpCodes.Stsfld, fieldInfo);
             cg.Emit(OpCodes.Ret);
             return (Action<TValue>) m.CreateDelegate(typeof(Action<TValue>));
 #else

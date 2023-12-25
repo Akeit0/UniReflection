@@ -32,7 +32,7 @@ namespace UniReflection
         var parameters = CreateParameters(0, i);
         var arguments = CreateArguments(0, i);
 #>
-    public static unsafe class NewCache<<#=genericTypes#>, TInstance>
+    public static unsafe class NewCache<TInstance,<#=genericTypes#>>
     {
         public static readonly Func<<#=genericTypes#>, TInstance> CreateInstance;
         public static readonly bool HasValidConstructor;

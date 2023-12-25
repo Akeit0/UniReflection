@@ -33,12 +33,30 @@ namespace UniReflection
     {
         internal static readonly Type[] TypeArray = { typeof(T) };
     }
-
+    internal static class TypeArrayCache<T1,T2>
+    {
+        internal static readonly Type[] TypeArray = { typeof(T1),typeof(T2) };
+    }
     public static unsafe class NewCache<T>
     {
+        /*[MethodImpl(MethodImplOptions.AggressiveInlining)]
+         public static T CreateInstance()
+         {
+#if Mono
+             if( typeof(T).IsValueType)
+                return  Activator.CreateInstance<T>();
+#else
+             if(IsValueType)
+             {
+                 return default;
+             }
+#endif
+             return CreateInstance();
+         }*/
         public static readonly Func<T> CreateInstance;
         public static readonly bool HasValidConstructor;
-
+        public static readonly bool IsValueType;
+        
         public static bool TryCreateInstance(out T instance)
         {
             if (HasValidConstructor)
@@ -55,6 +73,7 @@ namespace UniReflection
         {
             var targetType = typeof(T);
             var isValueType = targetType.IsValueType;
+            IsValueType = isValueType;
             var constructor = targetType.GetConstructor(BindingFlags.Instance|BindingFlags.Public|BindingFlags.NonPublic,null,Array.Empty<Type>(),null);
             if (constructor is null)
             {
@@ -63,14 +82,12 @@ namespace UniReflection
                     CreateInstance = () => throw new Exception($"no default constructor for {targetType}");
                     HasValidConstructor = false;
                 }
-
-                HasValidConstructor = true;
-                CreateInstance = () => default;
                 return;
             }
 
             HasValidConstructor = true;
 #if Mono
+            
                 var dm =
                 new DynamicMethod("", typeof(T), TypeArrayCache<object>.TypeArray, restrictedSkipVisibility: true);
                 var il = dm.GetILGenerator();
