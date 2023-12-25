@@ -61,7 +61,7 @@ class MyClass{
 }
 var offset=fieldInfo.GetOffset();
 var myclass=new MyClass();
-ref var a=GetFieldReferenceFromObject(myclass,offset);
+ref var a=GetFieldReferenceFromObject<int>(myclass,offset);
 ```
 ### Benchmark on il2cpp
 ![StaticField  ](/Media/StaticField.png)
