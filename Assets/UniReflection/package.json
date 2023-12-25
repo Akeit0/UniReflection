@@ -1,6 +1,6 @@
 ﻿{
   "name": "com.akeit0.uni-reflection",
-  "version": "0.1",
+  "version": "0.1.0",
   "displayName": "UniReflection",
   "description": "Reflection Utilities for UnityEngin 2022.2~2023.1 including IL2CPP",
   "unity": "2022.2",
